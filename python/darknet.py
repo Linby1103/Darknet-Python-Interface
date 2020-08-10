@@ -213,9 +213,21 @@ def drawbbox(res,image_path):
         ymin=int(bbox[2][1]-bbox[2][3]/2)
         xmax=int(bbox[2][2]/2 + bbox[2][0])
         ymax=int(bbox[2][3]/2 + bbox[2][1])
-        cv2.rectangle(image,(xmin,ymin),(xmax,ymax),color=(0,255,0))
-        cv2.putText(image, str(claeese), (xmin, ymin-20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 0), 1)
-        cv2.putText(image, str(conf), (xmin, ymin -10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 0),1)
+        # cv2.rectangle(image,(xmin,ymin),(xmax,ymax),color=(0,255,0))
+        # cv2.putText(image, str(claeese), (xmin, ymin-20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 0), 1)
+        # cv2.putText(image, str(conf), (xmin, ymin -10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 0),1)
+
+        cls_cof = "{}:{:.2f}".format(claeese, conf)
+
+        color = tuple(map(int, np.uint8(np.random.uniform(0, 255, 3))))
+
+        cv2.rectangle(image, tuple(xmin, ymin), tuple(xmax, ymax), color, 1)
+        t_size = cv2.getTextSize(cls_cof, cv2.FONT_HERSHEY_PLAIN, 1, 1)[0]
+        pt2 = xmin + t_size[0] + 3, ymin + t_size[1] + 4
+        cv2.rectangle(image, tuple(xmin, ymin), tuple(pt2), color, -1)
+        cv2.putText(image, cls_cof, (xmin, t_size[1] + 4 + ymin), cv2.FONT_HERSHEY_PLAIN,
+                    cv2.FONT_HERSHEY_PLAIN, 1, 1, 2)
+
 
         save_path='/mnt/share/test/Test_'+os.path.basename(image_path)
     # cv2.imshow("screen_title", image)
@@ -254,18 +266,29 @@ def drawbbox_usb(res,image):
         xmax = int(bbox[2][2] / 2 + bbox[2][0])
         ymax = int(bbox[2][3] / 2 + bbox[2][1])
 
+        cls_cof="{}:{:.2f}".format(cls, conf)
 
-        cv2.rectangle(image, (xmin, ymin), (xmax, ymax), color=color[1])
-        cv2.putText(image, str(cls), (xmin, ymin - 30), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color[1], 1)
-        cv2.putText(image, str(conf), (xmin, ymin - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.4, color[1],1)
+        color = tuple(map(int, np.uint8(np.random.uniform(0, 255, 3))))
+
+        cv2.rectangle(image, tuple((xmin,ymin)), tuple((xmax,ymax)), color, 1)
+        t_size = cv2.getTextSize(cls_cof, cv2.FONT_HERSHEY_PLAIN, 1 , 1)[0]
+        pt2 = xmin + t_size[0] + 3, ymin + t_size[1] + 4
+        cv2.rectangle(image, tuple((xmin,ymin)), tuple(pt2), color, -1)
+        cv2.putText(image, cls_cof, (xmin, t_size[1] + 4 + ymin), cv2.FONT_HERSHEY_PLAIN,
+                    cv2.FONT_HERSHEY_PLAIN, 1, 1, 2)
+
+
+        # cv2.rectangle(image, (xmin, ymin), (xmax, ymax), color=color[1])
+        # cv2.putText(image, str(cls), (xmin, ymin - 30), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color[1], 1)
+        # cv2.putText(image, str(conf), (xmin, ymin - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.4, color[1],1)
 
 
 
 
-    if person_f  and counter %15==0:
-        nowTime = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
-        save_path='/mnt/share/20200722-ch/ch3/image/'+str(nowTime)+"_8_7_shiyanshi.jpg"
-        cv2.imwrite(save_path,draw_img)
+    # if person_f  and counter %15==0:
+    #     nowTime = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
+    #     save_path='/mnt/share/20200722-ch/ch3/image/'+str(nowTime)+"_8_7_shiyanshi.jpg"
+    #     cv2.imwrite(save_path,draw_img)
 
 def detectVideo(net, meta, im, thresh=.55, hier_thresh=.3, nms=.45):
     """
@@ -491,7 +514,7 @@ if __name__ == "__main__":
         rtscap = rtsp.RTSCapture.create('rtsp://admin:Aa123456@192.168.1.11:554/Streaming/Channels/301')
         rtscap.start_read()  # 启动子线程并改变 read_latest_frame 的指向
         # Use_Rtsp(rtscap,"/mnt/workspcae/darknet/train/train_person/")  #/mnt/workspcae/caffe/test_model/2020-8-3
-        Use_Rtsp(rtscap, "/mnt/workspcae/caffe/test_model/2020-8-3/")
+        Use_Rtsp(rtscap, "/mnt/workspcae/caffe/test_model/2020-8-10/")
 
         rtscap.stop_read()
         rtscap.release()
